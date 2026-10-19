@@ -1,2 +1,2 @@
 pytest
-git+https://github.com/postgrespro/testgres.git@master
+testgres>=1.17,<1.18
