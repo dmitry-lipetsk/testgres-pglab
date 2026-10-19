@@ -169,10 +169,10 @@ WAL-gap scenario.
 ## Project layout
 
 ```text
-pglab.py                       PgLab implementation
 pyproject.toml                 Python package metadata
 example.py                     small usage example
 smoke.py                       end-to-end smoke test
+src/                           PgLab implementation
 tests/                         integration and compatibility tests
 scripts/doctor.sh              environment diagnostics
 scripts/run-tests.sh           privileged test runner
@@ -189,3 +189,7 @@ corresponding Testgres execution-context API is being reviewed upstream.
 ## License
 
 PgLab is distributed under the PostgreSQL License. See [`LICENSE`](LICENSE).
+
+## Authors
+
+[Postgres Professional](https://postgrespro.ru/about)
