@@ -1,6 +1,6 @@
 [![CI Status](https://img.shields.io/github/actions/workflow/status/postgrespro/testgres_exts.pglab/.github/workflows/ci.yml?label=CI)](https://github.com/postgrespro/testgres_exts.pglab/actions/workflows/ci.yml)
-[![PyPI package version](https://badge.fury.io/py/testgres_exts_pglab.svg)](https://badge.fury.io/py/testgres_exts.pglab)
-[![PyPI python versions](https://img.shields.io/pypi/pyversions/testgres_exts_pglab)](https://pypi.org/project/testgres-exts.pglab)
+[![PyPI package version](https://badge.fury.io/py/testgres-exts-pglab.svg)](https://badge.fury.io/py/testgres-exts.pglab)
+[![PyPI python versions](https://img.shields.io/pypi/pyversions/testgres-exts-pglab)](https://pypi.org/project/testgres-exts.pglab)
 
 # PgLab
 
