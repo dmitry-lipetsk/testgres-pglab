@@ -111,7 +111,7 @@ Check the host:
 ## Example
 
 ```python
-from pglab import PgLab
+from testgres_exts.pglab import PgLab
 
 with PgLab(
     pg_bin="/home/user/build/postgres/bin",
