@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from pglab import PgLab, IOLimits
+from src import PgLab, IOLimits
 
 
 PG_BIN = os.environ.get("PG_BIN", "/home/andrew/pgpro/build/master/bin")

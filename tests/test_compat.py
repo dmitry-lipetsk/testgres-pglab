@@ -1,6 +1,6 @@
 import inspect
 
-from pglab import NamespaceOperations
+from src import NamespaceOperations
 from testgres.backup import NodeBackup
 from testgres.node import PostgresNode
 

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from pglab import PgLab
+from src import PgLab
 
 
 PG_BIN = os.environ.get("PG_BIN", "/home/andrew/pgpro/build/master/bin")
@@ -321,6 +321,7 @@ def test_netem_loss_creates_real_replication_lag_then_recovers(lab):
     """)[0][0]
 
     assert recovered_lag < lag
+
 
 def test_replica_cannot_recover_after_required_wal_is_recycled(lab):
     """A long enough outage must become unrecoverable without WAL retention.

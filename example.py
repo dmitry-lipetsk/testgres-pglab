@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 
-from pglab import PgLab
+from src import PgLab
 
 
 def need_env(name):

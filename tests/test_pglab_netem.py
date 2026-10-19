@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from pglab import PgLab, PgLabError
+from src import PgLab, PgLabError
 
 
 PG_BIN = os.environ.get("PG_BIN", "/home/andrew/pgpro/build/master/bin")

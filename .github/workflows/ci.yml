@@ -1,0 +1,137 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - "**/*.md"
+
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - "**/*.md"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8 flake8-pyproject ruff==0.15.22
+    - name: Lint with flake8
+      run: |
+        flake8 .
+    - name: Lint with ruff
+      run: |
+        ruff check .
+
+  build-check:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v7
+      with:
+        python-version: "3.12"
+        cache: 'pip'
+        
+    - name: Install build tools
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install build twine
+
+    - name: Build package
+      run: |
+        python -m build
+
+    - name: Check package metadata
+      run: |
+        twine check dist/*
+
+  test-pglab:
+    runs-on: ubuntu-24.04
+    name: "test: pglab | ubuntu-24.04 | pg16 | py${{ matrix.python-version }}"
+    needs: build-check
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+
+    - name: Install PostgreSQL and PgLab system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          postgresql-16 \
+          postgresql-client-16 \
+          libpq-dev \
+          iproute2 \
+          iputils-ping \
+          iptables \
+          util-linux
+
+    - name: Install Python test dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r tests/requirements.txt
+
+    - name: PgLab preflight
+      run: |
+        set -eux
+        "$(pg_config --bindir)/postgres" --version
+        pg_config --bindir
+        findmnt -n -o SOURCE,FSTYPE -T /var/tmp
+        mount | grep cgroup || true
+        cat /sys/fs/cgroup/cgroup.controllers
+        cat /sys/fs/cgroup/cgroup.subtree_control || true
+
+    - name: Run privileged PgLab tests
+      run: |
+        set -eux
+        mkdir -p "${{ github.workspace }}/logs-pglab"
+        PYTHON="$(command -v python)"
+        PG_BIN="$(pg_config --bindir)"
+        sudo env \
+          PATH="$PATH" \
+          TESTGRES_PGLAB_TESTS=1 \
+          PG_BIN="$PG_BIN" \
+          PGLAB_OS_USER="$USER" \
+          PGLAB_DB_USER=postgres \
+          PGLAB_TEST_ROOT=/var/tmp \
+          TEST_CFG__LOG_DIR="${{ github.workspace }}/logs-pglab" \
+          "$PYTHON" -m pytest -vv -s tests
+
+    - name: Upload PgLab logs
+      uses: actions/upload-artifact@v7
+      if: always()
+      with:
+        name: testgres--pglab-logs--py${{ matrix.python-version }}--id${{ github.run_id }}
+        path: logs-pglab/

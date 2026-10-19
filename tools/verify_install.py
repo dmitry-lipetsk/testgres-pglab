@@ -5,7 +5,7 @@ import sys
 from importlib import metadata
 from pathlib import Path
 
-import pglab
+import src as pglab
 from testgres.backup import NodeBackup
 from testgres.node import PostgresNode
 
