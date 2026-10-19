@@ -1,3 +1,5 @@
+[![CI Status](https://img.shields.io/github/actions/workflow/status/postgrespro/testgres_exts.pglab/.github/workflows/ci.yml?label=CI)](https://github.com/postgrespro/testgres_exts.pglab/actions/workflows/ci.yml)
+
 # PgLab
 
 PgLab is a Linux fault-injection layer for PostgreSQL tests built on top of
